@@ -6,8 +6,7 @@
 #include <string.h>
 #include "aos/kernel.h"
 #include <network/network.h>
-#include <aos/errno.h>
-
+#include <sys/errno.h>
 #include "iot_import.h"
 
 extern uint64_t aliot_platform_time_left(uint64_t t_end, uint64_t t_now);
@@ -187,6 +186,7 @@ int32_t HAL_TCP_Read(uintptr_t fd, char *buf, uint32_t len, uint32_t timeout_ms)
     t_end    = HAL_UptimeMs() + timeout_ms;
     len_recv = 0;
     err_code = 0;
+	printf("[%s %d]\n", __func__, __LINE__);
 
     do {
         t_left = aliot_platform_time_left(t_end, HAL_UptimeMs());
@@ -202,6 +202,7 @@ int32_t HAL_TCP_Read(uintptr_t fd, char *buf, uint32_t len, uint32_t timeout_ms)
         ret = select(fd + 1, &sets, NULL, NULL, &timeout);
         if (ret > 0) {
             ret = recv(fd, buf + len_recv, len - len_recv, 0);
+			printf("[%s %d] ret=%d \n", __func__, __LINE__, ret);
             if (ret > 0) {
                 len_recv += ret;
             } else if (0 == ret) {
@@ -209,6 +210,7 @@ int32_t HAL_TCP_Read(uintptr_t fd, char *buf, uint32_t len, uint32_t timeout_ms)
                 err_code = -1;
                 break;
             } else {
+				printf("[%s %d] errno=%d \n", __func__, __LINE__, errno);
                 if (EINTR == errno) {
                     continue;
                 }
@@ -219,6 +221,7 @@ int32_t HAL_TCP_Read(uintptr_t fd, char *buf, uint32_t len, uint32_t timeout_ms)
         } else if (0 == ret) {
             break;
         } else {
+			printf("[%s %d] errno=%d \n", __func__, __LINE__, errno);
             if (EINTR == errno) {
                 continue;
             }
@@ -227,6 +230,7 @@ int32_t HAL_TCP_Read(uintptr_t fd, char *buf, uint32_t len, uint32_t timeout_ms)
             break;
         }
     } while ((len_recv < len));
+	printf("[%s %d]\n", __func__, __LINE__);
 
     // priority to return data bytes if any data be received from TCP
     // connection. It will get error code on next calling
@@ -248,6 +252,7 @@ int32_t HAL_TCP_Write(uintptr_t fd, const char *buf, uint32_t len,
 }
 int32_t HAL_TCP_Read(uintptr_t fd, char *buf, uint32_t len, uint32_t timeout_ms)
 {
+	printf("[%s %d]\n", __func__, __LINE__);
     return 0;
 }
 #endif

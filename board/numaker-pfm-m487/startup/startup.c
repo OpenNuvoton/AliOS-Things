@@ -39,22 +39,9 @@ static void sys_init(void)
 
     board_cli_init();
 
-#if defined(DEV_SAL_MK3060)
-    hal_wifi_register_module(&aos_wifi_module_mk3060);  
-    hal_wifi_init();
-#endif
-
-#if defined(WITH_SAL) || defined(WITH_LWIP)
-//    hal_ota_register_module(&numicro_ota_module);
-#endif
-
     hw_start_hal();
-    
-    #ifdef WITH_LWIP
-    lwip_tcpip_init();
-    #endif
+        
     /*user_trigger_irq();*/  //for example
-
     /*aos components init including middleware and protocol and so on !*/
     aos_components_init(&kinit);
 

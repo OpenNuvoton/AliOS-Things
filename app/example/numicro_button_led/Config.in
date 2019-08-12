@@ -1,0 +1,8 @@
+config AOS_APP_NUMICRO_BUTTON_LED
+    bool "Test Suite"
+    help
+      Button and LED controlling on NuMicro boards
+
+if AOS_APP_NUMICRO_BUTTON_LED
+# Configurations for app yts
+endif

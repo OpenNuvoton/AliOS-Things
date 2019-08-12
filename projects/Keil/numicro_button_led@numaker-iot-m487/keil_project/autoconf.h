@@ -1,0 +1,37 @@
+/*
+ *
+ * Automatically generated file; DO NOT EDIT.
+ * AliOS Things Configuration
+ *
+ */
+#define AOS_COMP_DEBUG 1
+#define AOS_COMP_NETMGR 1
+#define OSAL_RHINO 1
+#define AOS_APP_NUMICRO_BUTTON_LED 1
+#define AOS_BUILD_BOARD "numaker-iot-m487"
+#define KV_CONFIG_MAX_VAL_LEN 512
+#define VFS_CONFIG_PATH_MAX 256
+#define KV_CONFIG_TASK_STACK_SIZE 1024
+#define AOS_ARCH_ARMV7M 1
+#define AOS_COMP_YLOOP 1
+#define KV_CONFIG_MAX_KEY_LEN 128
+#define AOS_MCU_M487JIDAE 1
+#define AOS_BOARD_NUMAKER_IOT_M487 1
+#define AOS_COMP_KERNEL_INIT 1
+#define AOS_COMP_KV 1
+#define VFS_CONFIG_MAX_FILE_NUM 50
+#define AOS_COMP_ULOG 1
+#define VFS_CONFIG_FD_OFFSET 512
+#define AOS_COMP_OSAL_AOS 1
+#define WIFI 1
+#define AOS_NET_WITH_WIFI 1
+#define AOS_COMP_RHINO 1
+#define AOS_BUILD 1
+#define DEBUG_CONFIG_CPU_USAGE_PERIOD 0
+#define KV_CONFIG_TASK_PRIORITY 32
+#define AOS_COMP_VFS 1
+#define AOS_BUILD_APP "numicro_button_led"
+#define VFS_CONFIG_DEVICE_NODES 25
+#define AOS_COMP_NEWLIB_STUB 1
+#define AOS_APP_EXAMPLE 1
+#define OSAL_CONFIG "rhino"

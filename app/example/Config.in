@@ -210,11 +210,34 @@ if AOS_APP_UDATA_LOCAL_DEMO
         default "udata_demo.udata_local_demo"
 endif
 
-
 source "app/example/udata_demo/udata_cloud_demo/Config.in"
 if AOS_APP_UDATA_CLOUD_DEMO
     config AOS_BUILD_APP
         default "udata_demo.udata_cloud_demo"
+endif
+
+source "app/example/numicro_button_led/Config.in"
+if AOS_APP_NUMICRO_BUTTON_LED
+    config AOS_BUILD_APP
+        default "numicro_button_led"
+endif
+
+source "app/example/numicro_temperature_sensor/Config.in"
+if AOS_APP_NUMICRO_TEMPERATURE_SENSOR
+    config AOS_BUILD_APP
+        default "numicro_temperature_sensor"
+endif
+
+source "app/example/numicro_accelerometer_sensor/Config.in"
+if AOS_APP_NUMICRO_ACCELEROMETER_SENSOR
+    config AOS_BUILD_APP
+        default "numicro_accelerometer_sensor"
+endif
+
+source "app/example/numicro_aliyun/Config.in"
+if AOS_APP_NUMICRO_ALIYUN
+    config AOS_BUILD_APP
+        default "numicro_aliyun"
 endif
 
 

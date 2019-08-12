@@ -52,8 +52,10 @@ static const struct nu_modinit_s i2c_modinit_tab[] = {
 static uint32_t i2c_modinit_mask = 0;
 
 
-#define NU_I2C_TIMEOUT_STAT_INT     500000
-#define NU_I2C_TIMEOUT_STOP         500000
+//#define NU_I2C_TIMEOUT_STAT_INT     500000
+//#define NU_I2C_TIMEOUT_STOP         500000
+#define NU_I2C_TIMEOUT_STAT_INT     2000
+#define NU_I2C_TIMEOUT_STOP         2000
 #define TRANCTRL_STARTED        (1)
 #define TRANCTRL_NAKLASTDATA    (1 << 1)
 #define TRANCTRL_LASTDATANAKED  (1 << 2)
@@ -353,7 +355,7 @@ static int platform_i2c_is_trsn_done(struct i2c_s *obj)
 
 static int platform_i2c_poll_status_timeout(struct i2c_s *obj, int (*platform_is_status)(struct i2c_s *obj), uint32_t timeout)
 {
-    long long t1, t2, elapsed = 0;
+    uint64_t t1, t2, elapsed = 0;
     int status_assert = 0;
 
     t1 = aos_now_ms();
@@ -364,7 +366,7 @@ static int platform_i2c_poll_status_timeout(struct i2c_s *obj, int (*platform_is
         }
 
         t2 = aos_now_ms();
-        elapsed = (t2 > t1) ? (t2 - t1) : ((uint64_t) t2 + 0xFFFFFFFF - t1 + 1);
+        elapsed = (t2 >= t1) ? (t2 - t1) : ((uint64_t) t2 + 0xFFFFFFFFFFFF - t1 );
         if (elapsed >= timeout) {
             break;
         }
@@ -402,7 +404,7 @@ static int platform_i2c_is_tran_started(struct i2c_s *obj)
 
 static int platform_i2c_poll_tran_heatbeat_timeout(struct i2c_s *obj, uint32_t timeout)
 {
-    long long t1, t2, elapsed = 0;
+		uint64_t t1, t2, elapsed = 0;
     int tran_started;
     char *tran_pos = NULL;
     char *tran_pos2 = NULL;
@@ -429,7 +431,7 @@ static int platform_i2c_poll_tran_heatbeat_timeout(struct i2c_s *obj, uint32_t t
             continue;
         }
 
-        elapsed = (t2 > t1) ? (t2 - t1) : ((uint64_t) t2 + 0xFFFFFFFF - t1 + 1);
+        elapsed = (t2 >= t1) ? (t2 - t1) : ((uint64_t) t2 + 0xFFFFFFFFFFFFF - t1);
         if (elapsed >= timeout) {   // Transfer idle
             break;
         }

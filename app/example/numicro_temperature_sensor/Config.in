@@ -1,0 +1,8 @@
+config AOS_APP_NUMICRO_TEMPERATURE_SENSOR
+    bool "Temperature Sensor"
+    help
+      Get Temperature value from a sensor on NuMicro MCU boards
+
+if AOS_APP_NUMICRO_TEMPERATURE_SENSOR
+# Configurations for app
+endif

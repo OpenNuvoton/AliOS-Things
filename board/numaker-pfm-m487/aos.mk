@@ -24,9 +24,6 @@ $(NAME)_SOURCES += config/k_config.c \
 
 $(NAME)_SOURCES += startup/startup_M480_gcc.c
 
-
-GLOBAL_LDFLAGS  += -T board/numaker-pfm-m487/M487.ld
-
 GLOBAL_INCLUDES += .    \
                    config/   \
                    drivers/  \
@@ -55,11 +52,6 @@ else
 GLOBAL_DEFINES += CONFIG_NO_TCPIP
 endif
 
-
-ifeq ($(COMPILER),armcc)
-$(NAME)_LINK_FILES := startup_M480.o
-endif
-
 CONFIG_SYSINFO_PRODUCT_MODEL := ALI_AOS_NUMAKER_M487
 CONFIG_SYSINFO_DEVICE_NAME := $(NAME)
 CONFIG_SYSINFO_OS_VERSION := 100
@@ -70,3 +62,11 @@ GLOBAL_CFLAGS += -DSYSINFO_DEVICE_NAME=\"$(CONFIG_SYSINFO_DEVICE_NAME)\"
 GLOBAL_CFLAGS += -DSYSINFO_ARCH=\"$(HOST_ARCH)\"
 GLOBAL_CFLAGS += -DSYSINFO_MCU=\"$(HOST_MCU_FAMILY)\"
 
+ifeq ($(COMPILER),armcc)
+$(NAME)_LINK_FILES := startup/startup_M480_gcc.o
+GLOBAL_LDFLAGS += -L --scatter=board/numaker-pfm-m487/M487.sct
+else ifeq ($(COMPILER),iar)
+GLOBAL_LDFLAGS += --config board/numaker-pfm-m487/M487.icf
+else
+GLOBAL_LDFLAGS  += -T board/numaker-pfm-m487/M487.ld
+endif

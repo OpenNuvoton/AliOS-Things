@@ -1,0 +1,8 @@
+config AOS_APP_NUMICRO_ACCELEROMETER_SENSOR
+    bool "ACCELEROMETER Sensor"
+    help
+      Get ACCELEROMETER value from a sensor on NuMicro MCU boards
+
+if AOS_APP_NUMICRO_ACCELEROMETER_SENSOR
+# Configurations for app
+endif

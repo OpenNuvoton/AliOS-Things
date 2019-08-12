@@ -42,8 +42,9 @@ enum msgTypes
 typedef union
 {
 	unsigned char byte;	                /**< the whole byte */
-#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-	struct
+#if 0
+//Wayne modified for little
+struct
 	{
 		unsigned int type : 4;			/**< message type nibble */
 		unsigned int dup : 1;				/**< DUP flag bit */

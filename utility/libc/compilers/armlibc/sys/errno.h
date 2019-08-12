@@ -155,3 +155,6 @@
 #define ENSRCNAMELOOP           177 /* Domain name is too long */
 
 #endif /* _SYS_ERROR_H */
+#ifndef errno
+extern int errno;
+#endif

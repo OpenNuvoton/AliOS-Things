@@ -1,0 +1,13 @@
+config AOS_APP_NUMICRO_ALIYUN
+    bool "NUMICRO ALIYUN"
+    select AOS_COMP_NETMGR
+    select AOS_COMP_CLI
+    select AOS_COMP_CJSON
+    select AOS_COMP_LINKKIT_SDK_C
+    select APP_FEATURE_LINKKIT_MQTT
+    help
+        Connect to Aliyun on NuMicro board
+
+if AOS_APP_NUMICRO_ALIYUN
+# Configurations for NUMICRO ALIYUN
+endif

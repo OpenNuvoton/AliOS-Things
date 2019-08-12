@@ -15,6 +15,8 @@ GLOBAL_INCLUDES += drivers/lwIP/include/netif \
                    drivers/misc \
                    drivers/common
 
+GLOBAL_INCLUDES += ../../../drivers/sal/wifi/esp8266_aos
+
 BUILT_FULL_DRIVER := no
 ifeq ($(BUILT_FULL_DRIVER),yes)
 $(NAME)_SOURCES += \
@@ -84,8 +86,9 @@ endif
 $(NAME)_SOURCES += drivers/common/pinmap_common.c \
                    drivers/common/PeripheralPins.c \
                    drivers/common/pinmap.c \
+		   drivers/common/CheckSumUtils.c \
                    drivers/misc/nu_modutil.c \
-                   drivers/common/CheckSumUtils.c \
+                   drivers/misc/nu_rbuf.c \
                    hal/hw.c \
                    hal/hal_uart.c \
                    hal/hal_adc.c \
@@ -106,7 +109,10 @@ $(NAME)_SOURCES += drivers/common/pinmap_common.c \
 
 ifeq ($(ETHERNET),1)
 $(NAME)_SOURCES += drivers/lwIP/netif/m480_eth.c
+$(NAME)_SOURCES += hal/eth_port.c
 endif
+
+
 
 ifeq ($(COMPILER),armcc)
 GLOBAL_CFLAGS   += --c99 --cpu=Cortex-M4 --apcs=/hardfp --fpu=vfpv4_sp_d16 -D__MICROLIB -g --split_sections

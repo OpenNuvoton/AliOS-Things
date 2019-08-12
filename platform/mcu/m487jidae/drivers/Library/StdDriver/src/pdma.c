@@ -336,14 +336,23 @@ void PDMA_SetTimeOut(PDMA_T * pdma,uint32_t u32Ch, uint32_t u32OnOff, uint32_t u
 {
     switch(u32Ch)
     {
-    case 0ul:
-        pdma->TOC0_1 = (pdma->TOC0_1 & ~PDMA_TOC0_1_TOC0_Msk) | u32TimeOutCnt;
-        break;
-    case 1ul:
-        pdma->TOC0_1 = (pdma->TOC0_1 & ~PDMA_TOC0_1_TOC1_Msk) | (u32TimeOutCnt << PDMA_TOC0_1_TOC1_Pos);
-        break;
-    default:
-        break;
+        case 0UL:
+            (pdma)->TOC0_1 = ((pdma)->TOC0_1 & ~PDMA_TOC0_1_TOC0_Msk) | u32TimeOutCnt;
+            break;
+        case 1UL:
+            (pdma)->TOC0_1 = ((pdma)->TOC0_1 & ~PDMA_TOC0_1_TOC1_Msk) | (u32TimeOutCnt << PDMA_TOC0_1_TOC1_Pos);
+            break;
+
+        default:
+            break;
+    }
+    if(u32OnOff)
+    {
+        (pdma)->TOUTEN |= (1UL << u32Ch);
+    }
+    else
+    {
+        (pdma)->TOUTEN &= ~(1UL << u32Ch);
     }
 }
 
