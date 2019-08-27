@@ -14,56 +14,17 @@
 
 #include "numicro_m487_led_button.h"
 
-#define BUILD_DEV 3
+#define PRODUCT_KEY             ""
+#define DEVICE_NAME             ""
+#define DEVICE_SECRET           ""
 
-#if (BUILD_DEV==0)
 
-#define PRODUCT_KEY             "a1Ll7sjheeL"
-#define PRODUCT_SECRET          "dEfhsQipc8Jez7gm"
-#define DEVICE_NAME             "nsUqaKB3YTWZWbYpqxKP"
-#define DEVICE_SECRET           "n2W2TYxBoJE7qHoaRl42KWzCZQE7lvFO"
-
-#elif (BUILD_DEV==1)
-//DEV0
-#define PRODUCT_KEY				"a1Ll7sjheeL"
-#define DEVICE_NAME             "NCC0Dpq4z3EmKal1UZxe"
-#define DEVICE_SECRET           "RLIZpPxsFgvDh9yChNjzcA2DcRPAhFpf"
-#define PRODUCT_SECRET          "dEfhsQipc8Jez7gm"
-
-#elif (BUILD_DEV==2)
-//APP0
-#define PRODUCT_KEY				"a1Ll7sjheeL"
-#define DEVICE_NAME             "PfrfuKsWweTxOnuG8wo4"
-#define DEVICE_SECRET           "EBsP2YuU486ybGOXiNcGlrtKQWMQs48H"
-#define PRODUCT_SECRET          "dEfhsQipc8Jez7gm"
-
-#elif (BUILD_DEV==3)
-//DEV1
-#define PRODUCT_KEY				"a1Ll7sjheeL"
-#define DEVICE_NAME             "5cDCjmKHMyUlGKxgECIa"
-#define DEVICE_SECRET           "gI5NBydQN8dLNgJp5GMEbrJ8b1gFb9Tc"
-#define PRODUCT_SECRET          "dEfhsQipc8Jez7gm"
-
-#elif (BUILD_DEV==4)
-//APP1
-#define PRODUCT_KEY				"a1Ll7sjheeL"
-#define DEVICE_NAME             "Z9TiBGz2gz2yB0GC31FW"
-#define DEVICE_SECRET           "OQS5VUMwT0vDnAwT8EI9kCCQ8MKZcL3i"
-#define PRODUCT_SECRET          "dEfhsQipc8Jez7gm"
-
-#else
-//Default
-#define PRODUCT_KEY             "a1MZxOdcBnO"
-#define PRODUCT_SECRET          "h4I4dneEFp7EImTv"
-#define DEVICE_NAME             "test_01"
-#define DEVICE_SECRET           "t9GmMf2jb3LgWfXBaZD2r3aJrfVWBv56"
-#endif
-
+#define PRODUCT_SECRET          ""
 /* These are pre-defined topics */
-#define TOPIC_UPDATE            "/"PRODUCT_KEY"/"DEVICE_NAME"/update"
-#define TOPIC_ERROR             "/"PRODUCT_KEY"/"DEVICE_NAME"/update/error"
-#define TOPIC_GET               "/"PRODUCT_KEY"/"DEVICE_NAME"/get"
-#define TOPIC_DATA               "/"PRODUCT_KEY"/"DEVICE_NAME"/data"
+#define TOPIC_UPDATE            "/"PRODUCT_KEY"/"DEVICE_NAME"/user/update"
+#define TOPIC_ERROR             "/"PRODUCT_KEY"/"DEVICE_NAME"/user/update/error"
+#define TOPIC_GET               "/"PRODUCT_KEY"/"DEVICE_NAME"/user/get"
+#define TOPIC_DATA               "/"PRODUCT_KEY"/"DEVICE_NAME"/user/data"
 
 #define MQTT_MSGLEN             (1024)
 
@@ -157,9 +118,9 @@ exit_handle_user_command:
 
 int handle_button_event(E_UserEvent eBtn)
 {
-	int ret = krhino_buf_queue_send(&gUsrEventQueue, (void *)&eBtn, sizeof(E_UserEvent));
-	if (ret != RHINO_SUCCESS)
-		EXAMPLE_TRACE( "krhino_buf_queue_send result\n" );
+    int ret = krhino_buf_queue_send(&gUsrEventQueue, (void *)&eBtn, sizeof(E_UserEvent));
+    if (ret != RHINO_SUCCESS)
+        EXAMPLE_TRACE( "krhino_buf_queue_send result\n" );
     return ret;
 
 exit_handle_button_event:
@@ -221,12 +182,11 @@ void event_handle(void *pcontext, void *pclient, iotx_mqtt_event_msg_pt msg)
         break;
 
     case IOTX_MQTT_EVENT_PUBLISH_RECEIVED:
-        if ( !handle_user_command(topic_info) )
-            EXAMPLE_TRACE("topic message arrived but without any related handle: topic=%.*s, topic_msg=%.*s",
-                          topic_info->topic_len,
-                          topic_info->ptopic,
-                          topic_info->payload_len,
-                          topic_info->payload);
+        EXAMPLE_TRACE("topic message arrived but without any related handle: topic=%.*s, topic_msg=%.*s",
+                      topic_info->topic_len,
+                      topic_info->ptopic,
+                      topic_info->payload_len,
+                      topic_info->payload);
         break;
 
     case IOTX_MQTT_EVENT_BUFFER_OVERFLOW:
@@ -245,18 +205,21 @@ static void _demo_message_arrive(void *pcontext, void *pclient, iotx_mqtt_event_
 
     switch (msg->event_type) {
     case IOTX_MQTT_EVENT_PUBLISH_RECEIVED:
-        /* print topic name and topic message */
-        EXAMPLE_TRACE("----");
-        EXAMPLE_TRACE("PacketId: %d", ptopic_info->packet_id);
-        EXAMPLE_TRACE("Topic: '%.*s' (Length: %d)",
-                      ptopic_info->topic_len,
-                      ptopic_info->ptopic,
-                      ptopic_info->topic_len);
-        EXAMPLE_TRACE("Payload: '%.*s' (Length: %d)",
-                      ptopic_info->payload_len,
-                      ptopic_info->payload,
-                      ptopic_info->payload_len);
-        EXAMPLE_TRACE("----");
+        if ( !handle_user_command(ptopic_info) )
+        {
+            /* print topic name and topic message */
+            EXAMPLE_TRACE("----");
+            EXAMPLE_TRACE("PacketId: %d", ptopic_info->packet_id);
+            EXAMPLE_TRACE("Topic: '%.*s' (Length: %d)",
+                          ptopic_info->topic_len,
+                          ptopic_info->ptopic,
+                          ptopic_info->topic_len);
+            EXAMPLE_TRACE("Payload: '%.*s' (Length: %d)",
+                          ptopic_info->payload_len,
+                          ptopic_info->payload,
+                          ptopic_info->payload_len);
+            EXAMPLE_TRACE("----");
+        }
         break;
     default:
         EXAMPLE_TRACE("Should NOT arrive here.");
@@ -275,11 +238,11 @@ int mqtt_client(void)
     char msg_pub[128];
     kstat_t kret;
 
-	if ( (kret=krhino_buf_queue_create( &gUsrEventQueue, "gUsrEventQueue", &g_u8MsgQBuf[0], sizeof(g_u8MsgQBuf), sizeof(E_UserEvent)) ) != RHINO_SUCCESS )
+    if ( (kret=krhino_buf_queue_create( &gUsrEventQueue, "gUsrEventQueue", &g_u8MsgQBuf[0], sizeof(g_u8MsgQBuf), sizeof(E_UserEvent)) ) != RHINO_SUCCESS )
     {
         EXAMPLE_TRACE("Creating gUsrEventQueue failed (%s %d).", __func__, __LINE__);
-		return -1;
-	}
+        return -1;
+    }
 
     /* Device AUTH */
     if (0 != IOT_SetupConnInfo(PRODUCT_KEY, DEVICE_NAME, DEVICE_SECRET, (void **)&pconn_info)) {
@@ -361,19 +324,19 @@ int mqtt_client(void)
     IOT_MQTT_Yield(pclient, 200);
 
     while(1) {
-		int received_msgsize=0;
-		E_UserEvent msgbuf;
+        int received_msgsize=0;
+        E_UserEvent msgbuf;
         kret = krhino_buf_queue_recv(&gUsrEventQueue, 1000/*AOS_WAIT_FOREVER*/, (void *)&msgbuf, &received_msgsize );
         if ( kret == RHINO_BLK_TIMEOUT )
-		{
+        {
             IOT_MQTT_Yield(pclient, 200);
-			continue;
-		}
+            continue;
+        }
         else if ( kret !=  RHINO_SUCCESS ) {
             EXAMPLE_TRACE("recv msg fail %d", kret);
             break;
         }
-		msg_len = 0;
+        msg_len = 0;
         /* Generate topic message */
         switch (msgbuf)
         {
@@ -400,7 +363,7 @@ int mqtt_client(void)
         rc = mqtt_publish_message (pclient, TOPIC_DATA, &topic_msg );
 
     }
-    
+
     IOT_MQTT_Yield(pclient, 200);
 
     IOT_MQTT_Unsubscribe(pclient, TOPIC_DATA);
@@ -409,9 +372,9 @@ int mqtt_client(void)
 
     IOT_MQTT_Destroy(&pclient);
 
-	kret = krhino_buf_queue_del(&gUsrEventQueue);
+    kret = krhino_buf_queue_del(&gUsrEventQueue);
     if( kret != RHINO_SUCCESS)
-		EXAMPLE_TRACE( "Delete gUsrEventQueue failed (%s %d).", __func__, __LINE__);
+        EXAMPLE_TRACE( "Delete gUsrEventQueue failed (%s %d).", __func__, __LINE__);
 
     return 0;
 }
