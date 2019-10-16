@@ -42,7 +42,7 @@ void uart_dma_rx_done_cb ( uint32_t idx, uint32_t dma_event);
 #endif
 
 
-#define MAX_BUF_UART_BYTES		(4096)
+#define MAX_BUF_UART_BYTES		(1024)
 
 struct nu_uart_var {
     uint32_t    ref_cnt;                // Reference count of the H/W module
@@ -829,7 +829,7 @@ exit_hal_uart_send:
 }
 
 #if DEVICE_UART_SERIAL_RX_ASYNCH
-#define DEF_DMA_RXBUF_NUM	 32
+#define DEF_DMA_RXBUF_NUM	 8
 void uart_dma_rx_start ( struct nu_uart_var *var );
 
 void uart_dma_rx_start ( struct nu_uart_var *var )
@@ -868,15 +868,15 @@ void uart_dma_rx_done_cb ( uint32_t idx, uint32_t dma_event)
     UART_T *uart_base = (UART_T *) NU_MODBASE(pserial_s->uart);
     int cur = var->fifo_rbuf_rx.chunk_idx;
     int trigger_len = var->fifo_buf_size/DEF_DMA_RXBUF_NUM;
-    int transferred_byte_count = hal_dma_transferred_bytecount ( var->pdma_chanid_rx );
-    transferred_byte_count = (transferred_byte_count==0)? trigger_len: trigger_len-(transferred_byte_count+1);
+    int transferred_byte_count = hal_dma_transferred_bytecount ( var->pdma_chanid_rx, trigger_len );
     int i32RBufWOff = 0;
 
     if ( dma_event & ( DMA_EVENT_TIMEOUT | DMA_EVENT_TRANSFER_DONE ) )
     {
         if ( dma_event & DMA_EVENT_TRANSFER_DONE ) //Transfer done
         {
-            uart_dma_rx_stop ( var );
+						transferred_byte_count = trigger_len;
+						uart_dma_rx_stop ( var );
             var->fifo_rbuf_rx.chunk_idx = (var->fifo_rbuf_rx.chunk_idx+1)%DEF_DMA_RXBUF_NUM;
             uart_dma_rx_start ( var ); // trigger next
         }

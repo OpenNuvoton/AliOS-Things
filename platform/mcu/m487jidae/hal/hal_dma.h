@@ -33,6 +33,7 @@ int hal_dma_channel_allocate(uint32_t capabilities);
 int hal_dma_channel_free(int channelid);
 int hal_dma_set_handler(int channelid, uint32_t handler, uint32_t id, uint32_t event);
 int hal_dma_fill_description(int channelid, uint32_t u32Peripheral, uint32_t data_width, uint32_t addr_src, uint32_t addr_dst, int32_t length, uint32_t timeout );
+int hal_dma_transferred_bytecount(int channelid, int trigger_len);
 
 #ifdef __cplusplus
 }

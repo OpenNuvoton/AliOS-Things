@@ -215,7 +215,7 @@ static int hal_dma_peripheral_control ( uint32_t u32Peripheral, uint32_t* u32Src
 	return 0;
 }
 
-int hal_dma_transferred_bytecount(int channelid)
+int hal_dma_transferred_bytecount(int channelid, int trigger_len)
 {
 		PDMA_T * pdma;
 		int i32BitWidth=0;
@@ -228,7 +228,7 @@ int hal_dma_transferred_bytecount(int channelid)
 		i32BitWidth = pdma->DSCT[channelid].CTL & PDMA_DSCT_CTL_TXWIDTH_Msk;
 		i32BitWidth = (i32BitWidth==PDMA_WIDTH_8)?1:(i32BitWidth==PDMA_WIDTH_16)?2:(i32BitWidth==PDMA_WIDTH_32)?4:0;
 		
-		return i32BitWidth * (((pdma->DSCT[channelid].CTL & PDMA_DSCT_CTL_TXCNT_Msk)>>PDMA_DSCT_CTL_TXCNT_Pos));
+		return trigger_len - i32BitWidth * (((pdma->DSCT[channelid].CTL & PDMA_DSCT_CTL_TXCNT_Msk)>>PDMA_DSCT_CTL_TXCNT_Pos)+1);
 }
 
 static int hal_fill_pdma_timeout(PDMA_T * pdma, int channelid, int timeout_us )

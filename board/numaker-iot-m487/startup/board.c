@@ -54,8 +54,8 @@ struct serial_s board_uart[] = {
 		.uart 		= UART_1,                                       
 		.pin_tx		= PH_8,
 		.pin_rx		= PH_9,
-		.pin_rts	= PA_0, //NC,
-		.pin_cts	= PA_1 	//NC
+		.pin_rts	= PB_8, //PA_0, //NC,
+		.pin_cts	= PB_9, //PA_1 	//NC
 	},	
 #endif
 };
