@@ -50,12 +50,17 @@ struct serial_s board_uart[] = {
 		.pin_cts	= NC
 	},
 #else
-	{ /* UART PORT 1, UART TX/RX in UDO IF */
+	{ /* UART PORT 1, For WIFI module */
 		.uart 		= UART_1,                                       
 		.pin_tx		= PH_8,
 		.pin_rx		= PH_9,
+		#ifdef CONFIG_NETM_FLOW_CONTROL
 		.pin_rts	= PB_8, //PA_0, //NC,
 		.pin_cts	= PB_9, //PA_1 	//NC
+		#else
+		.pin_rts	= NC,
+		.pin_cts	= NC,		
+		#endif
 	},	
 #endif
 };
@@ -380,9 +385,11 @@ int board_hw_start(void)
 	uart_wifi_esp8266.config.data_width = DATA_WIDTH_8BIT;
 	uart_wifi_esp8266.config.parity = NO_PARITY;
 	uart_wifi_esp8266.config.stop_bits = STOP_BITS_1;
-	//uart_wifi_esp8266.config.flow_control = FLOW_CONTROL_DISABLED;
+	#ifdef CONFIG_NETM_FLOW_CONTROL
 	uart_wifi_esp8266.config.flow_control = FLOW_CONTROL_CTS_RTS;
-	//uart_wifi_esp8266.config.flow_control = FLOW_CONTROL_RTS;
+	#else
+	uart_wifi_esp8266.config.flow_control = FLOW_CONTROL_DISABLED;
+	#endif
 	uart_wifi_esp8266.config.mode = MODE_TX_RX;
 	uart_wifi_esp8266.priv = NULL;
 
